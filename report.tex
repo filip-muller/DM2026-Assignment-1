@@ -1,0 +1,320 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{caption}
+\usepackage{float}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{parskip}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    urlcolor=blue
+}
+
+\title{\textbf{Data Mining 2026 Spring}\\Assignment 1: Build the Model from Scratch}
+\author{Student ID: [314551818]}
+\date{April 2026}
+
+\begin{document}
+
+\maketitle
+
+\noindent\textbf{GitHub Repository:} \url{https://github.com/filip-muller/DM2026-Assignment-1}
+
+\tableofcontents
+\newpage
+
+% ============================================================
+\section{Linear Regression}
+% ============================================================
+
+\subsection{(a) Loss Curves for Different Learning Rates}
+
+The model was trained for 500 iterations on each of the four datasets with learning rates $\eta \in \{0.1, 0.01, 0.001\}$. The loss curves (training and validation) for each combination are shown in the Jupyter notebook \texttt{Linear\_Regression.ipynb}.
+
+\subsection{(b) Evaluation Results}
+
+Table~\ref{tab:linreg} summarises the evaluation metrics on the validation set for all dataset and learning rate combinations.
+
+\begin{table}[H]
+\centering
+\caption{Linear Regression evaluation metrics (validation set, 500 iterations)}
+\label{tab:linreg}
+\begin{tabular}{llcccc}
+\toprule
+\textbf{Dataset} & \textbf{lr} & \textbf{MSE} & \textbf{MAE} & \textbf{RMSE} & \textbf{R$^2$} \\
+\midrule
+A & 0.1   & 0.0134 & 0.1010 & 0.1156 &  0.5690 \\
+A & 0.01  & 0.0134 & 0.1010 & 0.1156 &  0.5690 \\
+A & 0.001 & 0.0832 & 0.2369 & 0.2884 & -1.6836 \\
+\midrule
+B & 0.1   & 0.2137 & 0.4038 & 0.4623 &  0.0448 \\
+B & 0.01  & 0.2137 & 0.4038 & 0.4623 &  0.0448 \\
+B & 0.001 & 0.2687 & 0.4404 & 0.5184 & -0.2011 \\
+\midrule
+C & 0.1   & 0.0132 & 0.0987 & 0.1148 &  0.9954 \\
+C & 0.01  & 0.0132 & 0.0987 & 0.1148 &  0.9954 \\
+C & 0.001 & 0.2852 & 0.4273 & 0.5341 &  0.8994 \\
+\midrule
+D & 0.1   & 0.0824 & 0.2467 & 0.2870 &  0.9716 \\
+D & 0.01  & 0.0824 & 0.2467 & 0.2870 &  0.9716 \\
+D & 0.001 & 0.3540 & 0.4778 & 0.5950 &  0.8780 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{(c) Observations}
+
+\textbf{Effect of learning rate.}
+At $\eta = 0.1$ and $\eta = 0.01$, the results are identical across all four datasets --- both learning rates fully converge within 500 iterations and reach the same solution. The loss curves look visually different (0.1 drops faster early on) but the endpoints are the same.
+
+At $\eta = 0.001$, the model simply does not converge in 500 iterations. On datasets C and D it still gets a reasonable R$^2$ (0.8994 and 0.8780 respectively) because those datasets are easier to fit, but on A the R$^2$ collapses to $-1.68$, meaning the model is worse than a horizontal line. The loss is still clearly declining at iteration 500 --- it just needs more time.
+
+\textbf{Dataset variability.}
+Dataset C fits near-perfectly at both working learning rates (R$^2 = 0.9954$) and dataset D also fits well (R$^2 = 0.9716$). Dataset A is mediocre ($R^2 \approx 0.57$), and dataset B is the worst --- R$^2$ of only 0.045 at convergence, suggesting the linear model struggles with whatever structure is in that data. The train/val loss gap was also the largest for dataset B.
+
+\textbf{Takeaway.}
+A low learning rate of 0.001 is too slow for a 500-iteration budget and leads to significantly worse results. Learning rates of 0.1 and 0.01 both reach the same solution; 0.01 is the safer default as it avoids any risk of overshooting on harder problems.
+
+% ============================================================
+\section{Logistic Regression}
+% ============================================================
+
+\subsection{(a) Loss Curves for Different Learning Rates}
+
+The model was trained for 500 iterations on each of the four datasets with learning rates $\eta \in \{0.1, 0.01, 0.001\}$. Loss curves are shown in \texttt{Logistic\_Regression.ipynb}.
+
+\subsection{(b) Evaluation Results --- Learning Rate}
+
+\begin{table}[H]
+\centering
+\caption{Logistic Regression evaluation metrics by learning rate (500 iterations)}
+\label{tab:logreg_lr}
+\begin{tabular}{llcccc}
+\toprule
+\textbf{Dataset} & \textbf{lr} & \textbf{Accuracy} & \textbf{Precision} & \textbf{Recall} & \textbf{F1} \\
+\midrule
+A & 0.1   & 0.9050 & 0.9087 & 0.9171 & 0.9128 \\
+A & 0.01  & 0.8775 & 0.8784 & 0.8986 & 0.8884 \\
+A & 0.001 & 0.3875 & 0.4364 & 0.4424 & 0.4394 \\
+\midrule
+B & 0.1   & 0.7800 & 0.7793 & 0.8160 & 0.7972 \\
+B & 0.01  & 0.7625 & 0.7600 & 0.8066 & 0.7826 \\
+B & 0.001 & 0.3925 & 0.4286 & 0.4387 & 0.4336 \\
+\midrule
+C & 0.1   & 0.9762 & 0.9852 & 0.9719 & 0.9785 \\
+C & 0.01  & 0.9456 & 0.9707 & 0.9303 & 0.9500 \\
+C & 0.001 & 0.8406 & 0.8774 & 0.8290 & 0.8525 \\
+\midrule
+D & 0.1   & 0.9225 & 0.9330 & 0.9266 & 0.9298 \\
+D & 0.01  & 0.9113 & 0.9346 & 0.9029 & 0.9185 \\
+D & 0.001 & 0.8319 & 0.8668 & 0.8228 & 0.8442 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{(c) Observations --- Learning Rate}
+
+$\eta = 0.1$ consistently gives the best results within 500 iterations across all datasets. On dataset C it reaches F1\,=\,0.9785, on dataset D F1\,=\,0.9298. The loss drops quickly and the curve is essentially flat well before iteration 500.
+
+$\eta = 0.01$ converges more slowly. By iteration 500 the loss is still visibly declining (e.g.\ dataset A: train loss 0.426, val loss 0.431). Metrics are noticeably lower than with $\eta = 0.1$ --- dataset A drops from F1\,=\,0.9128 to 0.8884. Given more iterations this setting would catch up.
+
+$\eta = 0.001$ essentially fails within a 500-iteration budget. Dataset A starts at a loss of $\sim$1.03 and only reaches $\sim$0.91 by iteration 500 --- barely any progress. Accuracy on datasets A and B ends up at $\sim$38--39\%, worse than random guessing for a balanced binary task. Datasets C and D fare better (84\% and 83\%) but are still far behind the other learning rates.
+
+With a fixed 500-iteration budget, $\eta = 0.1$ is the clear winner. $\eta = 0.001$ is simply not viable at this iteration count.
+
+\subsection{(d) Loss Curves for Different Numbers of Iterations}
+
+Using a fixed $\eta = 0.01$, the model was trained with $n\_iteration \in \{500, 1000, 1500\}$. Loss curves are shown in \texttt{Logistic\_Regression.ipynb}.
+
+\subsection{(e) Evaluation Results --- Number of Iterations}
+
+\begin{table}[H]
+\centering
+\caption{Logistic Regression evaluation metrics by number of iterations ($\eta = 0.01$)}
+\label{tab:logreg_iter}
+\begin{tabular}{llcccc}
+\toprule
+\textbf{Dataset} & \textbf{Iterations} & \textbf{Accuracy} & \textbf{Precision} & \textbf{Recall} & \textbf{F1} \\
+\midrule
+A & 500  & 0.8775 & 0.8784 & 0.8986 & 0.8884 \\
+A & 1000 & 0.9025 & 0.9045 & 0.9171 & 0.9108 \\
+A & 1500 & 0.9025 & 0.9083 & 0.9124 & 0.9103 \\
+\midrule
+B & 500  & 0.7625 & 0.7600 & 0.8066 & 0.7826 \\
+B & 1000 & 0.7775 & 0.7783 & 0.8113 & 0.7945 \\
+B & 1500 & 0.7775 & 0.7783 & 0.8113 & 0.7945 \\
+\midrule
+C & 500  & 0.9456 & 0.9707 & 0.9303 & 0.9500 \\
+C & 1000 & 0.9744 & 0.9885 & 0.9651 & 0.9767 \\
+C & 1500 & 0.9788 & 0.9897 & 0.9719 & 0.9807 \\
+\midrule
+D & 500  & 0.9113 & 0.9346 & 0.9029 & 0.9185 \\
+D & 1000 & 0.9263 & 0.9394 & 0.9266 & 0.9330 \\
+D & 1500 & 0.9256 & 0.9393 & 0.9255 & 0.9323 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{(f) Observations --- Number of Iterations}
+
+More iterations consistently help, but the gains depend heavily on the dataset.
+
+\textbf{Dataset A:} F1 jumps from 0.8884 at 500 iterations to 0.9108 at 1000, then barely changes at 1500 (0.9103). Effectively plateaued after 1000 iterations.
+
+\textbf{Dataset B:} Improves from F1\,=\,0.7826 at 500 to 0.7945 at 1000, then stays exactly the same at 1500. The loss is still slowly decreasing at 1500 but it is not translating into better classification anymore --- this dataset appears to be close to the model's ceiling regardless of training time.
+
+\textbf{Dataset C:} The only dataset that keeps improving all the way to 1500: F1\,=\,0.9500\,$\to$\,0.9767\,$\to$\,0.9807. Going from 1000 to 1500 iterations still gives a meaningful bump here.
+
+\textbf{Dataset D:} A solid improvement from 500 to 1000 (F1: 0.9185\,$\to$\,0.9330), but 1500 is almost identical to 1000 (0.9323 vs.\ 0.9330). Effectively converged.
+
+Overall, 1000 iterations is a reasonable stopping point for most datasets at $\eta = 0.01$. Dataset B plateaus early; dataset C benefits from more training more than the others.
+
+% ============================================================
+\section{Data Preprocessing}
+% ============================================================
+
+\subsection{(a) Missing Value Statistics Before Imputation}
+
+The following columns in \texttt{NYCU\_Iris.csv} contained missing values. Their median and standard deviation before any imputation are shown in Table~\ref{tab:before_imputation}.
+
+\begin{table}[H]
+\centering
+\caption{Median and standard deviation of columns with missing values --- before imputation}
+\label{tab:before_imputation}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Column} & \textbf{Median} & \textbf{Std} \\
+\midrule
+SepalLengthCm  & 6.3000 & 1.0371 \\
+SepalWidthCm   & 2.9000 & 0.3896 \\
+PetalLengthCm  & 5.0856 & 1.5828 \\
+PetalWidthCm   & 1.6000 & 0.7067 \\
+BranchLength   & 16.3000 & 1.0352 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{(b) KNN Imputation and Comparison}
+
+Missing values were replaced using \texttt{sklearn.impute.KNNImputer} with $k = 5$. The resulting statistics are shown in Table~\ref{tab:after_imputation}.
+
+\begin{table}[H]
+\centering
+\caption{Median and standard deviation of previously missing columns --- after KNN imputation}
+\label{tab:after_imputation}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Column} & \textbf{Median} & \textbf{Std} \\
+\midrule
+SepalLengthCm  & 6.3000 & 1.0093 \\
+SepalWidthCm   & 2.9000 & 0.3724 \\
+PetalLengthCm  & 5.0357 & 1.5150 \\
+PetalWidthCm   & 1.7000 & 0.6946 \\
+BranchLength   & 16.3000 & 1.0110 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Observations.}
+The medians are almost unchanged after imputation: SepalLengthCm, SepalWidthCm, and BranchLength remain exactly the same, while PetalLengthCm and PetalWidthCm shift only slightly. Standard deviations decrease modestly across all five columns.
+
+This is expected behaviour for KNN imputation: each missing value is filled with the average of its $k$ nearest neighbours, which naturally pulls the imputed value toward the local mean and never introduces extreme values. As a result, the spread (std) tightens slightly. The stability of the medians suggests the missing values were not concentrated on one tail of the distribution, so the central tendency is preserved.
+
+% ============================================================
+\section{Data Exploration}
+% ============================================================
+
+\subsection{(a) Histogram of PetalWidthCm}
+
+The histogram of \texttt{PetalWidthCm} is shown in the notebook \texttt{Real\_World\_Classification.ipynb}.
+
+\textbf{Observations.}
+The histogram appears approximately normal, but with notable outliers at both tails. There is a broad, roughly bell-shaped cluster spanning $\sim$1.0--2.5\,cm with a peak around 1.5--2.0\,cm. However, there are many values at the extremes, including values near $-1$\,cm and around 4\,cm. The value of $-1$ is unusual for a centimetre measurement and likely represents a data artefact or encoding for missing values.
+
+\subsection{(b) Feature with Largest Positive Correlation}
+
+Using \texttt{sklearn.feature\_selection.r\_regression} (Pearson correlation coefficient) against \texttt{PetalWidthCm}, the feature with the strongest positive correlation (excluding \texttt{PetalWidthCm}, \texttt{Species}, and \texttt{Id}) is:
+
+\begin{center}
+\textbf{PetalWidthCompactness} \quad ($r = 0.9917$)
+\end{center}
+
+This is a near-perfect positive linear relationship, suggesting \texttt{PetalWidthCompactness} is almost a direct linear function of \texttt{PetalWidthCm}.
+
+\subsection{(c) Top 5 Features with Strongest Negative Correlations}
+
+\begin{table}[H]
+\centering
+\caption{Top 5 features with strongest negative Pearson correlation with \texttt{PetalWidthCm}}
+\label{tab:neg_corr}
+\begin{tabular}{lc}
+\toprule
+\textbf{Feature} & \textbf{Pearson $r$} \\
+\midrule
+SepalWidthMajorAxis   & $-0.0964$ \\
+SepalGlossIndex       & $-0.0952$ \\
+SepalWidthCompactness & $-0.0885$ \\
+SepalWidthCurvature   & $-0.0813$ \\
+SepalWidthMinorAxis   & $-0.0744$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+All five are sepal-width-related features. Notably, all correlations are very weak (all $|r| < 0.10$), meaning there is essentially no linear relationship between these features and \texttt{PetalWidthCm}. The contrast with the positive side ($r = 0.99$) is stark.
+
+\subsection{(d) Boxplots}
+
+Boxplots for \texttt{PetalWidthCompactness} and the five negatively correlated features are shown in \texttt{Real\_World\_Classification.ipynb}.
+
+% ============================================================
+\section{Regularization}
+% ============================================================
+
+\subsection{(a) Loss Curves --- No Regularization vs.\ L2}
+
+The model was trained for 10\,000 iterations with $\eta = 0.1$ under four settings: no regularization, and L2 with $\lambda \in \{0.01, 1, 100\}$. Loss curves are shown in \texttt{Real\_World\_Classification.ipynb}.
+
+\subsection{(b) Test Set Evaluation}
+
+\begin{table}[H]
+\centering
+\caption{Binary classifier evaluation on test set under different regularization settings}
+\label{tab:reg_eval}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Setting} & \textbf{Accuracy} & \textbf{Precision} & \textbf{Recall} & \textbf{F1} \\
+\midrule
+No regularization  & 0.7200 & 0.7125 & 0.7500 & 0.7308 \\
+L2 $\lambda=0.01$  & 0.7200 & 0.7125 & 0.7500 & 0.7308 \\
+L2 $\lambda=1$     & \textbf{0.7400} & \textbf{0.7342} & \textbf{0.7632} & \textbf{0.7484} \\
+L2 $\lambda=100$   & 0.5067 & 0.5067 & 1.0000 & 0.6726 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{(c) Observations}
+
+\textbf{Training curves (5a).}
+
+\textit{No regularization:} The training loss keeps decreasing through all 10\,000 iterations, but the validation loss bottoms out around iteration 900 ($\approx 0.569$) and then slowly starts climbing. This is a textbook case of overfitting --- the model is fitting noise in the training data and generalising worse over time.
+
+\textit{L2 $\lambda = 0.01$:} The curves are nearly indistinguishable from the no-regularization case. The penalty term is too small relative to the loss to have any practical effect.
+
+\textit{L2 $\lambda = 1$:} The training loss is slightly higher (the weights are being constrained), but the validation loss is more stable and does not diverge upward as clearly. The model is better controlled.
+
+\textit{L2 $\lambda = 100$:} The loss freezes after approximately 150 iterations at train\,=\,0.6747 / val\,=\,0.6839 and never moves again. The regularization penalty completely dominates the gradient --- weights are driven to near-zero and training stops entirely.
+
+\textbf{Test set results (5b).}
+
+$\lambda = 0.01$ produces exactly the same test results as no regularization --- no practical difference. $\lambda = 1$ is the best setting: test F1 improves from 0.7308 to 0.7484, confirming that moderate regularization does help generalisation here.
+
+$\lambda = 100$ is completely broken: Recall\,=\,1.0 and Precision\,$\approx$\,0.507 means the model predicts \textit{every} sample as class 1. With weights forced to near-zero, only the bias term survives and the model defaults to always predicting the majority class. This is a clear case of under-fitting caused by over-regularization.
+
+\end{document}

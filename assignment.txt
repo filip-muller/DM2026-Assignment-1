@@ -1,0 +1,147 @@
+Data Mining Course, 2026 Spring
+
+Assignment 1: Build the Model from Scratch
+
+March 19, 2026 
+Overview
+
+In Assignment 1, we contain 5 questions to explore the usage and configuration of supervised learning models. We then apply these concepts to a real-world classification task, carrying out data exploration, preprocessing, and model evaluation techniques.
+Instructions
+
+Please submit your solution by April 9, 11:59 PM. 
+Late submissions are not accepted. You can use any third-party libraries or AI tools to assist your work, but if plagiarism or cheating on assignments, the grade will be 0.
+
+Submissions consist of two parts: 
+Code 
+Please host your code on a public GitHub repository (commit before deadline). 
+Report.
+Please ensure your public GitHub link is included within your report, and submit your report via E3.
+File name: DM_asg1_{studentID}.pdf
+Please write down your report in English. The TA will test whether your code can run successfully.
+Github Repository: https://github.com/NYCU-Data-Mining/DM2026-Assignment-1
+
+1. Linear Regression (20 points):
+Please refer to Linear_Regression.ipynb and file(metrics.py) in the model folder. Do not change random_seed, as it will affect the evaluation results. 
+Apply the following questions 1(a) to 1(c) to all datasets (linear_data_A, linear_data_B, linear_data_C, and linear_data_D) in the data/linear_data folder.
+Change the learning rate to the following values, and plot the loss curve for each learning rate:
+learning rate∊{0.1, 0.01, 0.001}
+	
+[Hint]
+Change the learning rate by modifying the code shown in the figure on the left.
+Each dataset shows three figures of loss curves (learning rate∊{0.1, 0.01, 0.001}). The right figure shows an example of plotting the loss curve.
+
+Following 1(a), show the evaluations by using the “evaluate_linear_regression” function:
+[Hint]
+Each dataset shows three evaluation results  (learning rate∊{0.1, 0.01, 0.001}).
+Each evaluation (shown in a screenshot, as the figure on the left) contains the following metrics:  MSE, MAE, RMSE, R squared.
+Before evaluating, you must complete the TODO sections (as the figure on the right) in model/metrics.py. Please use the pre-imported sklearn package. 
+
+
+Describe your observations in 1(a) and 1(b). 
+
+
+2. Logistic Regression (20 points):
+Please refer to Logistic_Regression.ipynb and file(metrics.py) in the model folder. Do not change random_seed, as it will affect the evaluation results. 
+Apply the following questions 2(a) to 2(f) to all datasets (logistic_data_A, logistic_data_B, logistic_data_C, and logistic_data_D) in the data/logistic_data folder.
+Change the learning rate to the following values, and plot the loss curve for each learning rate:
+learning rate∊{0.1, 0.01, 0.001}
+[Hint]
+Change the learning rate by modifying the code shown in the figure on the left (same as 1(a)).
+Each dataset shows three figures of loss curves (learning rate∊{0.1, 0.01, 0.001}). The right figure shows an example of plotting the loss curve.
+
+Following 2(a), show the evaluations by using the “evaluate_binary_classifier” function.
+[Hint]
+Each dataset shows three evaluation results  (learning rate∊{0.1, 0.01, 0.001}).
+Each evaluation (shown in a screenshot, as the figure on the left) contains the metrics:  Accuracy, Precision, Recall, F1 score.
+Before evaluating, you must complete the TODO sections (as the figure on the right) in model/metrics.py. Please use the pre-imported sklearn package. 
+
+Describe your observations in 2(a) and 2(b).
+
+Change the number of training iterations to the following values, and plot the loss curve for each setting (using a fixed learning rate of 0.01):
+n_iteration∊{500, 1000, 1500}
+[Hint]
+Each dataset shows three figures of loss curves (n_iteration∊{500, 1000, 1500}), presented in a format similar to that in 2(a).
+
+Following 2(d), show the evaluations by using the “evaluate_binary_classifier” function. 
+[Hint]
+Each dataset shows three evaluation results  (n_iteration∊{500, 1000, 1500}).
+Each evaluation (shown in a screenshot) contains the metrics:  Accuracy, Precision, Recall, F1 score, presented in a format similar to that in 2(b).
+
+
+Describe your observations in 2(d) and 2(e).
+
+
+3. Data Preprocessing  (20 points):
+Please refer to Real_World_Classification.ipynb. Do not change random_seed, as it will affect the evaluation results. NYCU_Iris.csv is in the data folder.
+Report the median and standard deviation for columns with missing values.
+
+Write the code to replace the missing values using “Nearest Neighbors Imputation” for columns with missing values. Report the median and standard deviation of those columns. Compare your result with 3(a) and explain your observation.
+
+[Hint]
+sklearn.impute
+
+
+4. Data Exploration  (20 points):
+Please continue using Real_World_Classification.ipynb. Based on the preprocessed data from Task 3, proceed with the data exploration. Do not change the random_seed to ensure consistency in evaluation results.
+Plot the histogram of the column “PetalWidthCm” in “NYCU_Iris.csv”. Please describe your observations for the histogram.
+
+List the feature (excluding “PetalWidthCm”, “Species”, and “Id”) that has the largest positive correlation (Pearson correlation coefficient) with the “PetalWidthCm” column.
+
+
+[Hint]
+Pearson correlation: sklearn.feature_selection.r_regression
+
+
+Report the top 5 features with the strongest negative correlations with the 'PetalWidthCm' column.
+
+Plot the boxplot for all features found in 4(b) and 4(c).
+
+5. Regularization  (20 points):
+Please continue using Real_World_Classification.ipynb. Based on the preprocessed data from Task 3, proceed with the data exploration. Do not change the random_seed to ensure consistency in evaluation results.
+L2 Regularization.   Please run Real_World_Classification.ipynb to compare the performance between no regularization (current code) and L2 regularization. For L2 regularization, set the regularization parameter (reg_lambda in the code) to 0.01, 1, and 100, respectively. Then, plot the loss curves for all settings:  
+(1) No regularization
+	(2) L2 (reg_lambda=0.01)
+	(3) L2 (reg_lambda=1)
+	(4) L2 (reg_lambda=100)
+[Hint]
+Four figures in total, presented in a format similar to that in 2(a) 
+To use L2 regularization, please set the reg_type='l2' and reg_lambda value in the fit() function.  For example: model = LinearModel (..., reg_type=’l2’, reg_lambda=0.01)
+
+Following 5(a), show the testing results by using the “evaluate_binary_classifier” function.
+[Hint]
+Show two testing results (no regularization and L2).
+Each testing result (shown in a screenshot) contains the metrics:  Accuracy, Precision, Recall, F1 score,  presented in a format similar to that in 2(b).
+
+Describe your observations in 5(a) and 5(b). 
+
+
+
+
+Reference
+
+
+https://github.com/anhquan0412/basic_model_scratch/tree/master
+https://scikit-learn.org/stable/api/sklearn.metrics.html
+https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/fork-a-repo
+FAQ
+Below are some common questions and answers. If you have any other questions, please feel free to contact the TA at nycu.dm.ta@gmail.com.
+
+How to download the code from github?
+Fork the repository: Click the "Fork" button at the top right to create a copy under your own GitHub account.
+Clone to your local machine: 
+Open your terminal and run: git clone https://github.com/XXX/XXX.git
+If this is your first time contributing to a project, you can follow this official tutorial: Fork a repo - GitHub Docs.
+2. How to upload the code to your github repo?
+  Once you have finished making changes to your code locally, you can upload them to your GitHub repository by following these steps:
+# If you used 'git clone', you can skip this part.
+git init
+git remote add origin <Your_Repository_URL>
+
+# Stage and Commit
+git add .
+git commit -m "assignment1"
+
+# Upload
+git push origin main
+If you need more details on managing files, you can refer to this guide: Adding a file to a repository - GitHub Docs
+
